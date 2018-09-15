@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<!-- Copyright 2016 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================-->
+<html class="mdl-js"><head lang="en">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="icon" type="image/png" href="https://google-developers.appspot.com/machine-learning/crash-course/playground/favicon.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1024">
+  <meta name="keywords" content="neural networks,machine learning,javascript">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Tensorflow — Neural Network Playground">
+  <meta property="og:description" content="Tinker with a real neural network right here in your browser.">
+  <meta property="og:url" content="http://playground.tensorflow.org">
+  <meta property="og:image" content="http://playground.tensorflow.org/preview.png">
+
+  <meta name="twitter:card" value="summary_large_image">
+  <meta name="twitter:title" content="Tensorflow — Neural Network Playground">
+  <meta name="twitter:description" content="Tinker with a real neural network right here in your browser.">
+  <meta name="twitter:url" content="http://playground.tensorflow.org">
+  <meta name="twitter:image" content="http://playground.tensorflow.org/preview.png">
+  <meta name="twitter:image:width" content="560">
+  <meta name="twitter:image:height" content="295">
+
+  <meta name="author" content="Daniel Smilkov and Shan Carter">
+  <title>A Neural Network Playground</title>
+  <link rel="stylesheet" href="a_data/bundle.css" type="text/css">
+  <link href="a_data/css.css" rel="stylesheet" type="text/css">
+  <script async="" src="analytics.js"></script><script src="a_data/lib.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header style="display: none;">
+    <h1 class="l--page">Tinker With a <b>Neural Network</b> <span class="optional">Right Here </span>in Your Browser.<br>Don’t Worry, You Can’t Break It. We Promise.</h1>
+  </header>
+
+  <!-- Top Controls -->
+  <div id="top-controls">
+    <div class="container l--page">
+      <div class="timeline-controls">
+        <button class="mdl-button mdl-js-button mdl-button--icon ui-resetButton" id="reset-button" title="Reset the network" data-upgraded=",MaterialButton">
+          <i class="material-icons">replay</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored ui-playButton" id="play-pause-button" title="Run/Pause" data-upgraded=",MaterialButton">
+          <i class="material-icons">play_arrow</i>
+          <i class="material-icons">pause</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon ui-stepButton" id="next-step-button" title="Step" data-upgraded=",MaterialButton">
+          <i class="material-icons">skip_next</i>
+        </button>
+      </div>
+      <div class="control">
+        <span class="label">Epochs</span>
+        <span class="value" id="iter-number">000,000</span>
+      </div>
+      <div class="control ui-learningRate">
+        <label for="learningRate">Learning rate</label>
+        <div class="select">
+          <select id="learningRate">
+            <option value="0.00001">0.00001</option>
+            <option value="0.0001">0.0001</option>
+            <option value="0.001">0.001</option>
+            <option value="0.003">0.003</option>
+            <option value="0.01">0.01</option>
+            <option value="0.03" selected="selected">0.03</option>
+            <option value="0.1">0.1</option>
+            <option value="0.3">0.3</option>
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-activation" style="display: none;">
+        <label for="activations">Activation</label>
+        <div class="select">
+          <select id="activations">
+            <option value="relu">ReLU</option>
+            <option value="tanh">Tanh</option>
+            <option value="sigmoid">Sigmoid</option>
+            <option value="linear" selected="selected">Linear</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-regularization">
+        <label for="regularizations">Regularization</label>
+        <div class="select">
+          <select id="regularizations">
+            <option value="none">None</option>
+            <option value="L1">L1</option>
+            <option value="L2" selected="selected">L2</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-regularizationRate">
+        <label for="regularRate">Regularization rate</label>
+        <div class="select">
+          <select id="regularRate">
+            <option value="0" selected="selected">0</option>
+            <option value="0.001">0.001</option>
+            <option value="0.003">0.003</option>
+            <option value="0.01">0.01</option>
+            <option value="0.03">0.03</option>
+            <option value="0.1">0.1</option>
+            <option value="0.3">0.3</option>
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-problem" style="display: none;">
+        <label for="problem">Problem type</label>
+        <div class="select">
+          <select id="problem">
+            <option value="classification" selected="selected">Classification</option>
+            <option value="regression">Regression</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Part -->
+  <div id="main-part" class="l--page">
+
+    <!--  Data Column-->
+    <div class="column data">
+      <h4>
+        <span>Data</span>
+      </h4>
+      <div class="ui-dataset">
+        <p>Which dataset do you want to use?</p>
+        <div class="dataset-list">
+          <div class="dataset" title="Circle" style="">
+            <canvas class="data-thumbnail" data-dataset="circle" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Exclusive or" style="">
+            <canvas class="data-thumbnail" data-dataset="xor" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Gaussian" style="">
+            <canvas class="data-thumbnail selected" data-dataset="gauss" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Spiral" style="">
+            <canvas class="data-thumbnail" data-dataset="spiral" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Plane" style="display: none;">
+            <canvas class="data-thumbnail selected" data-regdataset="reg-plane"></canvas>
+          </div>
+          <div class="dataset" title="Multi gaussian" style="display: none;">
+            <canvas class="data-thumbnail" data-regdataset="reg-gauss"></canvas>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ui-percTrainData">
+          <label for="percTrainData">Ratio of training to test data:&nbsp;&nbsp;<span class="value">10</span>%</label>
+          <p class="slider">
+            <div class="mdl-slider__container"><input class="mdl-slider mdl-js-slider is-lowest-value is-upgraded" id="percTrainData" min="10" max="90" step="10" data-upgraded=",MaterialSlider" value="10" type="range"><div class="mdl-slider__background-flex"><div class="mdl-slider__background-lower" style="flex: 0 1 0%;"></div><div class="mdl-slider__background-upper" style="flex: 1 1 0%;"></div></div></div>
+          </p>
+        </div>
+        <div class="ui-noise">
+          <label for="noise">Noise:&nbsp;&nbsp;<span class="value">50</span></label>
+          <p class="slider">
+            <div class="mdl-slider__container"><input class="mdl-slider mdl-js-slider is-upgraded" id="noise" min="0" max="50" step="5" data-upgraded=",MaterialSlider" value="50" type="range"><div class="mdl-slider__background-flex"><div class="mdl-slider__background-lower" style="flex: 1 1 0%;"></div><div class="mdl-slider__background-upper" style="flex: 0 1 0%;"></div></div></div>
+          </p>
+        </div>
+        <div class="ui-batchSize">
+          <label for="batchSize">Batch size:&nbsp;&nbsp;<span class="value">10</span></label>
+          <p class="slider">
+            <div class="mdl-slider__container"><input class="mdl-slider mdl-js-slider is-upgraded" id="batchSize" min="1" max="30" step="1" data-upgraded=",MaterialSlider" value="10" type="range"><div class="mdl-slider__background-flex"><div class="mdl-slider__background-lower" style="flex: 0.310345 1 0%;"></div><div class="mdl-slider__background-upper" style="flex: 0.689655 1 0%;"></div></div></div>
+          </p>
+        </div>
+          <button class="basic-button" id="data-regen-button" title="Regenerate data">
+            Regenerate
+          </button>
+      </div>
+    </div>
+
+    <!-- Features Column -->
+    <div class="column features" style="height: 495px;">
+      <h4>Features</h4>
+      <p>Which properties do you want to feed in?</p>
+      <div id="network">
+        <div id="canvas-sinY" class="canvas active" style="position: absolute; left: 53px; top: 333px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-sinX" class="canvas active" style="position: absolute; left: 53px; top: 278px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-xTimesY" class="canvas active" style="position: absolute; left: 53px; top: 223px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-ySquared" class="canvas active" style="position: absolute; left: 53px; top: 168px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-xSquared" class="canvas active" style="position: absolute; left: 53px; top: 113px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-y" class="canvas active" style="position: absolute; left: 53px; top: 58px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-x" class="canvas active" style="position: absolute; left: 53px; top: 3px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><svg id="svg" width="540" height="385">
+          <defs>
+            <marker id="markerArrow" markerWidth="7" markerHeight="13" refX="1" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M2,11 L7,6 L2,2"></path>
+            </marker>
+          </defs>
+        <g class="core" transform="translate(3,3)"><path marker-start="url(#markerArrow)" class="link" id="linksinY-1" d="M82,345C311,345 311,20.142857142857142 540,20.142857142857142" style="stroke-dashoffset: 0; stroke-width: 1.05994; stroke: rgb(232, 231, 228);"></path><path marker-start="url(#markerArrow)" class="link" id="linksinX-1" d="M82,290C311,290 311,18.428571428571427 540,18.428571428571427" style="stroke-dashoffset: 0; stroke-width: 1.27452; stroke: rgb(198, 216, 228);"></path><path marker-start="url(#markerArrow)" class="link" id="linkxTimesY-1" d="M82,235C311,235 311,16.714285714285715 540,16.714285714285715" style="stroke-dashoffset: 0; stroke-width: 1.48559; stroke: rgb(172, 203, 223);"></path><path marker-start="url(#markerArrow)" class="link" id="linkySquared-1" d="M82,180C311,180 311,15 540,15" style="stroke-dashoffset: 0; stroke-width: 1.05076; stroke: rgb(232, 232, 229);"></path><path marker-start="url(#markerArrow)" class="link" id="linkxSquared-1" d="M82,125C311,125 311,13.285714285714286 540,13.285714285714286" style="stroke-dashoffset: 0; stroke-width: 1.54532; stroke: rgb(164, 199, 221);"></path><path marker-start="url(#markerArrow)" class="link" id="linky-1" d="M82,70C311,70 311,11.571428571428571 540,11.571428571428571" style="stroke-dashoffset: 0; stroke-width: 1.14116; stroke: rgb(214, 225, 231);"></path><path marker-start="url(#markerArrow)" class="link" id="linkx-1" d="M82,15C311,15 311,9.857142857142858 540,9.857142857142858" style="stroke-dashoffset: 0; stroke-width: 1.43657; stroke: rgb(178, 206, 224);"></path><g class="node active" id="nodex" transform="translate(50,0)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan></text></g><g class="node active" id="nodey" transform="translate(50,55)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan></text></g><g class="node active" id="nodexSquared" transform="translate(50,110)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan><tspan baseline-shift="super" style="font-size: 9px;">2</tspan></text></g><g class="node active" id="nodeySquared" transform="translate(50,165)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan><tspan baseline-shift="super" style="font-size: 9px;">2</tspan></text></g><g class="node active" id="nodexTimesY" transform="translate(50,220)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan></text></g><g class="node active" id="nodesinX" transform="translate(50,275)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>sin(X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan><tspan>)</tspan></text></g><g class="node active" id="nodesinY" transform="translate(50,330)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>sin(X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan><tspan>)</tspan></text></g><path d="M82,15C311,15 311,9.857142857142858 540,9.857142857142858" class="link-hover"></path><path d="M82,70C311,70 311,11.571428571428571 540,11.571428571428571" class="link-hover"></path><path d="M82,125C311,125 311,13.285714285714286 540,13.285714285714286" class="link-hover"></path><path d="M82,180C311,180 311,15 540,15" class="link-hover"></path><path d="M82,235C311,235 311,16.714285714285715 540,16.714285714285715" class="link-hover"></path><path d="M82,290C311,290 311,18.428571428571427 540,18.428571428571427" class="link-hover"></path><path d="M82,345C311,345 311,20.142857142857142 540,20.142857142857142" class="link-hover"></path></g></svg>
+        <!-- Hover card -->
+        <div id="hovercard" style="left: 198.4px; top: 270px; display: none;">
+          <div style="font-size:10px">Click anywhere to edit.</div>
+          <div><span class="type">Weight</span> is <span class="value">0.15</span><span><input style="display: none;" value="0.15" type="number"></span>.</div>
+        </div>
+        <div class="callout thumbnail" style="display: none;">
+          <svg viewBox="0 0 30 30">
+            <defs>
+              <marker id="arrow" markerWidth="5" markerHeight="5" refX="5" refY="2.5" orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,0 L5,2.5 L0,5 z"></path>
+              </marker>
+            </defs>
+            <path d="M12,30C5,20 2,15 12,0" marker-end="url(#arrow)">
+          </path></svg>
+          <div class="label">
+            This is the output from one <b>neuron</b>. Hover to see it larger.
+          </div>
+        </div>
+        <div class="callout weights" style="display: none;">
+          <svg viewBox="0 0 30 30">
+            <defs>
+              <marker id="arrow" markerWidth="5" markerHeight="5" refX="5" refY="2.5" orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,0 L5,2.5 L0,5 z"></path>
+              </marker>
+            </defs>
+            <path d="M12,30C5,20 2,15 12,0" marker-end="url(#arrow)">
+          </path></svg>
+          <div class="label">
+            The outputs are mixed with varying <b>weights</b>, shown by the thickness of the lines.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden Layers Column -->
+    <div class="column hidden-layers">
+      <h4>
+        <div class="ui-numHiddenLayers" style="display: none;">
+          <button id="add-layers" class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+            <i class="material-icons">add</i>
+          </button>
+          <button id="remove-layers" class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+            <i class="material-icons">remove</i>
+          </button>
+        </div>
+        <span id="num-layers">0</span>
+        <span id="layers-label">Hidden layers</span>
+      </h4>
+      <div class="bracket"></div>
+    </div>
+
+    <!-- Output Column -->
+    <div class="column output">
+      <h4>Output</h4>
+      <div class="metrics ui-outputMetrics">
+        <div class="output-stats ui-percTrainData">
+          <span>Test loss</span>
+          <div class="value" id="loss-test">0.761</div>
+        </div>
+        <div class="output-stats train">
+          <span>Training loss</span>
+          <div class="value" id="loss-train">0.828</div>
+        </div>
+        <div id="linechart"><svg width="124" height="55"><g transform="translate(2,2)"><path class="line" style="fill: none; stroke: rgb(119, 119, 119); stroke-width: 1.5px;" d="M0,0Z"></path><path class="line" style="fill: none; stroke: black; stroke-width: 1.5px;" d="M0,51Z"></path></g></svg></div>
+      </div>
+      <div id="heatmap"><div style="width: 300px; height: 300px; position: relative; top: -20px; left: -20px;"><canvas width="100" height="100" style="width: 260px; height: 260px; position: absolute; top: 20px; left: 20px;"></canvas><svg width="300" height="300" style="position: absolute; left: 0px; top: 0px;"><g transform="translate(20,20)"><g class="train"><circle r="3" cx="181.66418220798369" cy="106.07982081842144" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="93.80703942678113" cy="110.41756589542423" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="126.5380351244874" cy="216.32433148342895" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="136.93272601565965" cy="96.21818892120089" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="54.94500147167807" cy="169.76252920018024" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="141.21238936333455" cy="103.20128970350711" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="66.903563260367" cy="205.69710940460692" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="122.32343786884846" cy="212.21422225002317" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="80.60557088676438" cy="132.6310054625013" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="74.77116571626176" cy="206.21503383152736" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="159.35230663425367" cy="148.02893907057668" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="78.52416010307803" cy="143.06019963174023" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="151.14774444026872" cy="116.46635756342899" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="179.01859533788266" cy="63.98815121934159" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="95.15013877662267" cy="158.92869487436985" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="38.02848172191715" cy="177.34776238260565" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="162.43080719196462" cy="109.25068144596759" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="129.28705828703602" cy="135.79984209791837" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="234.42407148058803" cy="11.891054983833486" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="211.65474099921818" cy="136.38510341321032" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="254.12108327355716" cy="171.2052660851791" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="56.739864410231895" cy="126.68922100368695" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="202.95692165540888" cy="52.64215793391374" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="77.61468849805567" cy="116.72987606288477" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="151.0686208578753" cy="144.6536067793725" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="62.245755740506794" cy="170.00076459641" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="64.77208053691717" cy="218.46133777990133" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="194.24056190232372" cy="135.7379246581913" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="171.45404991327104" cy="188.0410858551585" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="151.61145642946704" cy="120.62660776924481" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="189.65119577401464" cy="47.03067875348472" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="162.32511132161605" cy="30.914262311843117" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="117.40251992598388" cy="159.90930852305007" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="152.17453445354712" cy="202.96501799032407" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="115.09761435170888" cy="240.6823462352298" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="166.87152926324984" cy="85.81776935898847" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="151.4312575960857" cy="156.89079523130968" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="141.6414328980366" cy="222.64054080752567" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="139.01144444022307" cy="221.47391363790976" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="199.81070445332705" cy="60.42260538749744" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="84.32219012577171" cy="202.9735386320435" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="64.2221245990028" cy="179.77046719687073" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="52.84029688709699" cy="104.64021802947029" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="50.644530572086076" cy="191.927589365152" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="64.95735579152108" cy="215.00810463650518" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="167.06169748168415" cy="56.43620086175341" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="165.21269579073936" cy="76.70383203143503" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="144.7798634760845" cy="114.13786179769251" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="55.22333636593847" cy="160.36247414993903" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="47.26063286823177" cy="228.63185201012598" style="fill: rgb(245, 147, 34);"></circle></g><g class="test"></g><g class="x axis" transform="translate(0,260)"><g class="tick" style="opacity: 1;" transform="translate(0,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-6</text></g><g class="tick" style="opacity: 1;" transform="translate(21.666666666666664,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-5</text></g><g class="tick" style="opacity: 1;" transform="translate(43.33333333333333,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-4</text></g><g class="tick" style="opacity: 1;" transform="translate(65,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-3</text></g><g class="tick" style="opacity: 1;" transform="translate(86.66666666666666,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-2</text></g><g class="tick" style="opacity: 1;" transform="translate(108.33333333333334,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-1</text></g><g class="tick" style="opacity: 1;" transform="translate(130,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">0</text></g><g class="tick" style="opacity: 1;" transform="translate(151.66666666666669,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">1</text></g><g class="tick" style="opacity: 1;" transform="translate(173.33333333333331,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">2</text></g><g class="tick" style="opacity: 1;" transform="translate(195,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">3</text></g><g class="tick" style="opacity: 1;" transform="translate(216.66666666666669,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">4</text></g><g class="tick" style="opacity: 1;" transform="translate(238.33333333333331,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">5</text></g><g class="tick" style="opacity: 1;" transform="translate(260,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">6</text></g><path class="domain" d="M0,6V0H260V6"></path></g><g class="y axis" transform="translate(260,0)"><g class="tick" style="opacity: 1;" transform="translate(0,260)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-6</text></g><g class="tick" style="opacity: 1;" transform="translate(0,238.33333333333331)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-5</text></g><g class="tick" style="opacity: 1;" transform="translate(0,216.66666666666669)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-4</text></g><g class="tick" style="opacity: 1;" transform="translate(0,195)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-3</text></g><g class="tick" style="opacity: 1;" transform="translate(0,173.33333333333334)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-2</text></g><g class="tick" style="opacity: 1;" transform="translate(0,151.66666666666666)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-1</text></g><g class="tick" style="opacity: 1;" transform="translate(0,130)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">0</text></g><g class="tick" style="opacity: 1;" transform="translate(0,108.33333333333333)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">1</text></g><g class="tick" style="opacity: 1;" transform="translate(0,86.66666666666667)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">2</text></g><g class="tick" style="opacity: 1;" transform="translate(0,65)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">3</text></g><g class="tick" style="opacity: 1;" transform="translate(0,43.33333333333332)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">4</text></g><g class="tick" style="opacity: 1;" transform="translate(0,21.666666666666675)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">5</text></g><g class="tick" style="opacity: 1;" transform="translate(0,0)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">6</text></g><path class="domain" d="M6,0H0V260H6"></path></g></g></svg></div></div>
+      <div style="float:left;margin-top:20px">
+        <div style="display:flex; align-items:center;">
+
+          <!-- Gradient color scale -->
+          <div class="label" style="width:105px; margin-right: 10px">
+            Colors shows data, neuron and weight values.
+          </div>
+          <svg width="150" height="30" id="colormap">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="100%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f59322" stop-opacity="1"></stop>
+                <stop offset="50%" stop-color="#e8eaeb" stop-opacity="1"></stop>
+                <stop offset="100%" stop-color="#0877bd" stop-opacity="1"></stop>
+              </linearGradient>
+            </defs>
+            <g class="core" transform="translate(3, 0)">
+              <rect width="144" height="10" style="fill: url('#gradient');"></rect>
+            <g class="x axis" transform="translate(0,10)"><g class="tick" style="opacity: 1;" transform="translate(0,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-1</text></g><g class="tick" style="opacity: 1;" transform="translate(72,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">0</text></g><g class="tick" style="opacity: 1;" transform="translate(144,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">1</text></g><path class="domain" d="M0,6V0H144V6"></path></g></g>
+          </svg>
+        </div>
+        <br>
+        <div style="display:flex;">
+          <label class="ui-showTestData mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded" for="show-test-data" data-upgraded=",MaterialCheckbox,MaterialRipple">
+            <input id="show-test-data" class="mdl-checkbox__input" type="checkbox">
+            <span class="mdl-checkbox__label label">Show test data</span>
+          <span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label>
+          <label class="ui-discretize mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded" for="discretize" data-upgraded=",MaterialCheckbox,MaterialRipple">
+            <input id="discretize" class="mdl-checkbox__input" type="checkbox">
+            <span class="mdl-checkbox__label label">Discretize output</span>
+          <span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- More -->
+  <div class="more" style="display: none;">
+    <!-- <button class="mdl-button mdl-js-button mdl-button--icon"><i class="material-icons">keyboard_arrow_down</i></button> -->
+    <button class="mdl-button mdl-js-button mdl-button--fab" data-upgraded=",MaterialButton">
+      <i class="material-icons">keyboard_arrow_down</i>
+    </button>
+  </div>
+  <!-- Article -->
+
+  <article id="article-text" style="display: none;">
+    <div class="l--body">
+      <h2>Um, What Is a Neural Network?</h2>
+      <p>It’s a technique for building a computer program that learns 
+from data. It is based very loosely on how we think the human brain 
+works. First, a collection of software “neurons” are created and 
+connected together, allowing them to send messages to each other. Next, 
+the network is asked to solve a problem, which it attempts to do over 
+and over, each time strengthening the connections that lead to success 
+and diminishing those that lead to failure. For a more detailed 
+introduction to neural networks, Michael Nielsen’s <a href="http://neuralnetworksanddeeplearning.com/index.html">Neural Networks and Deep Learning</a> is a good place to start. For a more technical overview, try <a href="http://www.deeplearningbook.org/">Deep Learning</a> by Ian Goodfellow, Yoshua Bengio, and Aaron Courville.</p>
+    </div>
+
+    <div class="l--body">
+      <h2>This Is Cool, Can I Repurpose It?</h2>
+      <p>Please do! We’ve open sourced it on <a href="https://github.com/tensorflow/playground">GitHub</a>
+ with the hope that it can make neural networks a little more accessible
+ and easier to learn. You’re free to use it in any way that follows our <a href="https://github.com/tensorflow/playground/blob/master/LICENSE">Apache License</a>. And if you have any suggestions for additions or changes, please <a href="https://github.com/tensorflow/playground/issues">let us know</a>.</p>
+      <p>We’ve also provided some controls below to enable you tailor 
+the playground to a specific topic or lesson. Just choose which features
+ you’d like to be visible below then save <a class="hide-controls-link" href="https://google-developers.appspot.com/machine-learning/crash-course/playground/?utm_source=engedu&amp;utm_medium=ss&amp;utm_campaign=mlcc&amp;hl=en#activation=linear&amp;regularization=L2&amp;batchSize=10&amp;dataset=gauss&amp;regDataset=reg-plane&amp;learningRate=0.03&amp;regularizationRate=0&amp;noise=50&amp;networkShape=&amp;seed=0.48288&amp;showTestData=false&amp;discretize=false&amp;percTrainData=10&amp;x=true&amp;y=true&amp;xTimesY=true&amp;xSquared=true&amp;ySquared=true&amp;cosX=false&amp;sinX=true&amp;cosY=false&amp;sinY=true&amp;collectStats=true&amp;tutorial=dp-regularization-for-simplicity-l2&amp;problem=classification&amp;initZero=false&amp;hideText=true&amp;goalTrainTestDiffMinThresholdFirst=0.012&amp;dataset_hide=false&amp;percTrainData_hide=false&amp;noise_hide=false&amp;batchSize_hide=false&amp;xTimesY_hide=false&amp;xSquared_hide=false&amp;ySquared_hide=false&amp;sinX_hide=false&amp;sinY_hide=false&amp;activation_hide=true&amp;learningRate_hide=false&amp;regularization_hide=false&amp;regularizationRate_hide=false&amp;numHiddenLayers_hide=true&amp;problem_hide=true">this link</a>, or <a href="javascript:location.reload();">refresh</a> the page.</p>
+      <div class="hide-controls"><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Show test data</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Discretize output</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Play button</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Step button</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Reset button</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Learning rate</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" type="checkbox"><span class="mdl-checkbox__label label">Activation</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Regularization</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Regularization rate</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" type="checkbox"><span class="mdl-checkbox__label label">Problem type</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Which dataset</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Ratio train data</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Noise level</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Batch size</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" type="checkbox"><span class="mdl-checkbox__label label"># of hidden layers</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label></div>
+    </div>
+
+    <div class="l--body">
+      <h2>What Do All the Colors Mean?</h2>
+      <p>Orange and blue are used throughout the visualization in 
+slightly different ways, but in general orange shows negative values 
+while blue shows positive values.</p>
+      <p>The data points (represented by small circles) are initially 
+colored orange or blue, which correspond to positive one and negative 
+one.</p>
+      <p>In the hidden layers, the lines are colored by the weights of 
+the connections between neurons. Blue shows a positive weight, which 
+means the network is using that output of the neuron as given. An orange
+ line shows that the network is assiging a negative weight.</p>
+      <p>In the output layer, the dots are colored orange or blue 
+depending on their original values. The background color shows what the 
+network is predicting for a particular area. The intensity of the color 
+shows how confident that prediction is.</p>
+    </div>
+
+    <div class="l--body">
+      <h2>What Library Are You Using?</h2>
+      <p>We wrote a tiny neural network <a href="https://github.com/tensorflow/playground/blob/master/src/nn.ts">library</a>
+      that meets the demands of this educational visualization. For real-world applications, consider the
+      <a href="https://www.tensorflow.org/">TensorFlow</a> library.
+      </p>
+    </div>
+
+    <div class="l--body">
+      <h2>Credits</h2>
+      <p>
+        This was created by Daniel Smilkov and Shan Carter.
+        This is a continuation of many people’s previous work — most notably Andrej Karpathy’s <a href="http://cs.stanford.edu/people/karpathy/convnetjs/demo/classify2d.html">convnet.js demo</a>
+        and Chris Olah’s <a href="http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/">articles</a>
+ about neural networks.
+        Many thanks also to D. Sculley for help with the original idea 
+and to Fernanda Viégas and Martin Wattenberg and the rest of the
+        <a href="https://research.google.com/bigpicture/">Big Picture</a> and <a href="https://research.google.com/teams/brain/">Google Brain</a> teams for feedback and guidance.
+      </p>
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="l--body">
+      <a href="https://www.tensorflow.org/" class="logo">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 528 87" xml:space="preserve">
+        	<path d="M37.4,15.5v70.3H25V15.5H1V3.4h60.4v12.1H37.4z"></path>
+        	<path d="M149,85.8v-35c0-12.5-4.7-16.9-12.7-16.9c-8.1,0-12.7,5.8-12.7,15.8v36.1h-12.1V24h12.1v5.9c3.1-4.5,9.2-7.2,15.5-7.2
+        		c14.4,0,22,9.4,22,27.7v35.4H149z"></path>
+        	<path d="M188.7,87.1c-8.4,0-17.4-3.3-23.7-7.9l5.5-9.2c5.8,4,12.2,6.1,18,6.1c7.7,0,11.3-2.5,11.3-6.8c0-4.7-5.4-6.9-14.4-10.4
+        		c-13.3-5.2-18.1-9.7-18.1-19.4c0-11.1,8.7-16.8,21.1-16.8c7.8,0,15.4,2.8,21,6.8l-5.3,9.3c-5.1-3.5-10.1-5.3-16-5.3
+        		c-5.9,0-8.5,2.4-8.5,5.7c0,3.1,2.1,5.3,11.4,8.9c13.8,5.3,20.8,9.1,20.8,20.7C211.9,82.5,200.8,87.1,188.7,87.1z"></path>
+        	<path d="M242,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
+        		C269.9,75.1,257.9,87.1,242,87.1z M241.9,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
+        		C257.7,42.4,251.7,34.3,241.9,34.3z"></path>
+        	<path d="M310,36.8c-2.6-1.4-5.3-2.2-9.3-2.2c-7.7,0-12.1,5.4-12.1,15.9v35.3h-12.1V24h12.1v5.9c2.8-4.1,8-7.2,14.1-7.2
+        		c4.9,0,8,0.9,10.5,2.6L310,36.8z"></path>
+        	<path d="M330.3,15.5v21.5H354v12.1h-23.7v36.6H318V3.4h50.3v12.1H330.3z"></path>
+        	<path d="M374.5,85.8V6.4L386.6,0v85.8H374.5z"></path>
+        	<path d="M421.9,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
+        		C449.8,75.1,437.7,87.1,421.9,87.1z M421.7,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
+        		C437.5,42.4,431.5,34.3,421.7,34.3z"></path>
+        	<path d="M510.9,85.8h-10.4l-8.4-31.2c-1.3-4.7-2.6-10.2-3.2-13.2c-0.6,2.9-1.9,8.6-3.2,13.3l-8.2,31.1h-10.4L450.3,24h12l7.3,30
+        		c1.2,4.7,2.5,10.6,3.1,13.5c0.7-3.1,2.1-8.7,3.4-13.5l8.2-30h9.8l8.4,30.1c1.3,4.8,2.6,10.4,3.3,13.4c0.7-3.1,1.9-8.8,3.1-13.5
+        		l7.3-30h12L510.9,85.8z"></path>
+        	<path d="M79.1,76.2c-6.7,0-12.7-4-14.9-13.2l40.5-12.2c-0.2-2.8-0.6-5.4-1.3-8c-3-11.6-11.1-20.1-24.7-20.1
+        		c-16,0-27.1,11.3-27.1,32.3c0,20.5,12.2,32.1,26.7,32.1c9.4,0,15.9-2.9,21.3-8.1l-7.2-7.8C88.4,74.3,84.3,76.2,79.1,76.2z
+        	 M78,33.7c7.9,0,12.1,4.5,13.8,10.5l-27.9,8.5l0-3.5C64.9,39.3,69.8,33.7,78,33.7z"></path>
+        </svg>
+      </a>
+      <div class="links">
+        <a href="https://github.com/tensorflow/playground">Source on GitHub</a>
+      </div>
+    </div>
+  </footer>
+  <script src="a_data/bundle.js"></script>
+  <!-- Google analytics -->
+  <script src="a_data/analytics.js"></script>
+
+
+</body></html>

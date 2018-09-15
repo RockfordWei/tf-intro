@@ -1,0 +1,471 @@
+body .devsite-vplus-slide-frame {
+  font-size: 20px;
+  line-height: normal;
+}
+
+.devsite-vplus-slide-frame .title-background {
+  background-color: #4285f4;
+}
+
+.devsite-vplus-slide-frame div[data-start-time] {
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  align-items: center;
+}
+
+.devsite-vplus-slide-frame h1.title {
+  font-size: 50px;
+  line-height: inherit;
+  font-weight: 300;
+  text-align: center;
+  position: relative;
+  top: 50% !important;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  width: 80%;
+}
+
+.devsite-vplus-slide-frame h2 {
+  line-height: inherit;
+  text-align: left;
+  margin-top: 20px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ebebeb;
+  width: 99.9%; /** Avoid overlap with right border of the slide frame. **/
+}
+
+.devsite-vplus-slide-frame ul {
+  font-size: 18px;
+  padding-left: 60px;
+  width: 95%;
+}
+
+.devsite-vplus-slide-frame .small-list-text li {
+  font-size: 75%;
+}
+
+.devsite-vplus-slide-frame p, .devsite-vplus-slide-frame pre {
+  padding-left: 30px;
+}
+
+.devsite-vplus-slide-frame table {
+  width: 60%;
+  margin-left: 20%;
+}
+
+.devsite-vplus-slide-frame td {
+  width: 50%;
+}
+
+.devsite-vplus-slide-frame .large-text {
+  font-size: 40px;
+  line-height: inherit;
+}
+
+.devsite-vplus-slide-frame .small-text ul > li {
+  font-size: 18px;
+}
+
+.devsite-vplus-slide-frame .restrict-width-for-video {
+  width: 75%;
+}
+
+.devsite-vplus-slide-frame .split img {
+  position: inherit;
+}
+
+.devsite-vplus-slide-frame img {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 80%;
+}
+
+.devsite-vplus-slide-frame svg {
+  height: 100%;
+  display: block;
+  margin: auto;
+}
+
+.devsite-vplus-slide-frame .inline-img {
+  width: 38%;
+  position: relative;
+  display: block;
+}
+
+.devsite-vplus-slide-frame .devsite-multiple-choice {
+  padding: 0 5%;
+  font-size: initial;
+}
+
+.devsite-vplus-slide-frame .indented p {
+  margin: 3px 0;
+}
+
+.devsite-vplus-slide-frame .indented p:not(:first-of-type) {
+  padding-left: 60px;
+}
+
+.devsite-vplus-slide-frame .indented-list li {
+  margin-left: 15px;
+}
+
+.devsite-vplus-slide-frame .stagger {
+  text-align: left;
+  margin-left: 40px;
+}
+
+.devsite-vplus-slide-frame .stagger p:nth-of-type(2) {
+  padding-left: 80px;
+}
+
+.devsite-vplus-slide-frame .stagger p:nth-of-type(3) {
+  padding-left: 120px;
+}
+
+.devsite-vplus-slide-frame .stagger p:nth-of-type(4) {
+  padding-left: 160px;
+}
+
+.devsite-vplus-slide-frame .split {
+  display: inline-block;
+  width: 100%
+}
+
+.devsite-vplus-slide-frame .split-left {
+  position: relative;
+  float: left;
+}
+
+.devsite-vplus-slide-frame .split-right {
+  position: relative;
+  float: right;
+}
+
+.devsite-vplus-slide-frame .split-equal {
+  width: 50%;
+}
+
+.devsite-vplus-slide-frame .split-large {
+  width: 70%;
+}
+
+.devsite-vplus-slide-frame .split-small {
+  width: 30%;
+}
+
+.devsite-vplus-slide-frame .height-padded-list li {
+  margin: 15px 0;
+}
+
+.devsite-vplus-slide-frame .progressive-list li:not(:last-child) {
+  color: gray;
+}
+
+.devsite-vplus-slide-frame .center-text-horizontal {
+  text-align: center;
+}
+
+.devsite-vplus-slide-frame .text-for-screen-reader {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
+
+.devsite-vplus-slide-frame .gray-text {
+  color: gray;
+}
+
+.devsite-vplus-slide-frame .green-text {
+  color: green;
+}
+
+.devsite-vplus-slide-frame .red-text {
+  color: red;
+}
+
+.devsite-vplus-slide-frame .link-exercise {
+  font-size: 2.5vw;
+  line-height: inherit;
+  padding: 22% 5% 5% 12%;
+}
+
+.devsite-vplus-slide-frame .link-exercise a {
+  text-decoration: underline;
+}
+
+.devsite-vplus-slide-frame .monospace,
+.devsite-vplus-slide-frame .monospace code {
+  color: black;
+  background-color: transparent;
+  font-family: monospace;
+}
+
+/* Handling to toggle callouts on embeddings diagrams */
+
+/* Toggle off all ellipses by default, whether in slides or in main docs */
+.embeddings-diagram ellipse {
+  display: none;
+}
+
+/* Toggle-ons for callouts in slides */
+.devsite-vplus-slide-frame #sparse-encoding ellipse#BlueLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #threed-embedding ellipse#GreenLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #lat-long ellipse#YellowLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #hidden-layers ellipse#PinkLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #dnn-output ellipse#RedLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #digits-sparse-encoding ellipse#BlueLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #digits-other-features ellipse#YellowLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #digits-threed-embedding ellipse#GreenLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #digits-hidden-layers ellipse#PinkLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #digits-logit-layer ellipse#PurpleLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #digits-target-class-layer ellipse#OrangeLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #movies-target-class-layer ellipse#OrangeLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #movies-sparse-encoding ellipse#BlueLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #movies-threed-embedding ellipse#GreenLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #movies-other-features ellipse#YellowLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #movies-hidden-layers ellipse#PinkLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame #movies-logit-layer ellipse#PurpleLabel {
+  display: block;
+}
+
+.devsite-vplus-slide-frame .svg-container {
+  height: 60%;
+  display: flex;
+}
+
+.devsite-vplus-slide-frame .non-ml-code #NonMLCode {
+  visibility: hidden;
+}
+
+.devsite-vplus-slide-frame .hide-info-text #info-collect-annotate,
+.devsite-vplus-slide-frame .hide-info-text .info-bias-data {
+  display: none;
+}
+
+.devsite-vplus-slide-frame .reporting-bias #reporting-bias tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .selection-bias #selection-bias tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .overgeneralization-bias #overgeneralization-bias tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .outgroup-homogeneity-bias #outgroup-homogeneity-bias tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .unconscious-bias-world #unconscious-bias-world tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .automation-bias #automation-bias tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .confirmation-bias #confirmation-bias tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .unconscious-bias-procedures #unconscious-bias-procedures tspan {
+  fill: black;
+  font-weight: bold;
+}
+
+.devsite-vplus-slide-frame .hide-fairness-info #fairness-info {
+  visibility: hidden;
+}
+
+.devsite-vplus-slide-frame .three-authors-per-set #ThreeAuthorsPerSetGroup {
+  visibility: visible;
+}
+
+.devsite-vplus-slide-frame .one-author-per-set #ThreeAuthorsPerSetGroup {
+  visibility: hidden;
+}
+
+.devsite-vplus-slide-frame .three-authors-per-set #OneAuthorPerSetGroup {
+  visibility: hidden;
+}
+
+.devsite-vplus-slide-frame .one-author-per-set #OneAuthorPerSetGroup {
+  visibility: visible;
+}
+
+/** To differentiate between vplus full screen mode and
+ *    browser full screen mode, we don't use e.g.
+ *    @media screen and display-mode: fullscreen
+ *    but instead add class devsite-vplus-fullscreen-mode to
+ *    the slide frame.  The following style rules apply in that case.
+ */
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame {
+  font-size: 3.2vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame h1.title {
+  font-size: 7.5vw;
+  line-height: inherit;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame h2 {
+    font-size: 5.2vw;
+  line-height: inherit;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame ul {
+  padding-left: 6vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame li {
+  margin: 1.3vw 0;
+  font-size: 3vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .indented-list li {
+  margin: 1.3vw 5vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame table {
+  width: 87%;
+  margin-left: 10%;
+  font-size: 3vw;
+  line-height: inherit;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .indented p {
+  margin: 1vw 0;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .indented p:not(:first-of-type) {
+  padding-left: 6vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame p {
+  font-size: 3vw;
+  padding-left: 6vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame pre {
+  font-size: 2.5vw;
+  line-height: inherit;
+  padding-left: 6vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame code {
+  font-size: 2.5vw;
+  line-height: initial;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .center-text-vertical {
+  padding-top: 5vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .compare-no::before {
+  font-size: 2.5vw;
+  display: inherit;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .stagger {
+  margin-left: 4vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .small-text ul > li {
+  font-size: 2.5vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .restrict-width-for-video {
+  width: 100%;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .inline-img-large {
+  width: 100vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .devsite-multiple-choice-question {
+  font-size: 2vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .devsite-multiple-answer {
+  font-size: 1.6vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame .devsite-multiple-choice-explanation {
+  font-size: 1.5vw;
+}
+
+.devsite-vplus-fullscreen-mode.devsite-vplus-slide-frame [data-video-mode="large"] {
+  display: none;
+}
