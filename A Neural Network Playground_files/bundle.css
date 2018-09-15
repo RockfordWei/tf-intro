@@ -762,7 +762,7 @@ g.column rect {
 }
 
 .hidden-layers #layers-label {
-  width: 150px; /** To accomodate the larger French text **/
+  width: 125px;
   display: inline-block;
 }
 
@@ -807,16 +807,11 @@ g.column rect {
   position: absolute;
   top: 0;
   right: 0;
-  width: 45%;
+  width: 50%;
   height: 55px;
-  overflow-y: hidden;
 }
 .metrics .train {
   color: #777;
-}
-
-.metrics .output-stats {
-  max-width: 147px;
 }
 
 #loss-test {

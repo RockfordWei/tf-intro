@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!-- Copyright 2016 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================-->
+<html class="mdl-js"><head lang="en">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="icon" type="image/png" href="http://playground.tensorflow.org/favicon.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1024">
+  <meta name="keywords" content="neural networks,machine learning,javascript">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Tensorflow — Neural Network Playground">
+  <meta property="og:description" content="Tinker with a real neural network right here in your browser.">
+  <meta property="og:url" content="http://playground.tensorflow.org">
+  <meta property="og:image" content="http://playground.tensorflow.org/preview.png">
+
+  <meta name="twitter:card" value="summary_large_image">
+  <meta name="twitter:title" content="Tensorflow — Neural Network Playground">
+  <meta name="twitter:description" content="Tinker with a real neural network right here in your browser.">
+  <meta name="twitter:url" content="http://playground.tensorflow.org">
+  <meta name="twitter:image" content="http://playground.tensorflow.org/preview.png">
+  <meta name="twitter:image:width" content="560">
+  <meta name="twitter:image:height" content="295">
+
+  <meta name="author" content="Daniel Smilkov and Shan Carter">
+  <title>A Neural Network Playground</title>
+  <link rel="stylesheet" href="A%20Neural%20Network%20Playground_files/bundle.css" type="text/css">
+  <link href="A%20Neural%20Network%20Playground_files/css.css" rel="stylesheet" type="text/css">
+  <script async="" src="A%20Neural%20Network%20Playground_files/analytics.js"></script><script src="A%20Neural%20Network%20Playground_files/lib.js"></script>
+</head>
+<body>
+  <!-- GitHub link -->
+  <a class="github-link" href="https://github.com/tensorflow/playground" title="Source on GitHub">
+    <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.5 60.5" width="60" height="60">
+      <polygon class="bg" points="60.5,60.5 0,0 60.5,0 "></polygon>
+      <path class="icon" d="M43.1,5.8c-6.6,0-12,5.4-12,12c0,5.3,3.4,9.8,8.2,11.4c0.6,0.1,0.8-0.3,0.8-0.6c0-0.3,0-1,0-2c-3.3,0.7-4-1.6-4-1.6c-0.5-1.4-1.3-1.8-1.3-1.8c-1.1-0.7,0.1-0.7,0.1-0.7c1.2,0.1,1.8,1.2,1.8,1.2c1.1,1.8,2.8,1.3,3.5,1c0.1-0.8,0.4-1.3,0.8-1.6c-2.7-0.3-5.5-1.3-5.5-5.9c0-1.3,0.5-2.4,1.2-3.2c-0.1-0.3-0.5-1.5,0.1-3.2c0,0,1-0.3,3.3,1.2c1-0.3,2-0.4,3-0.4c1,0,2,0.1,3,0.4c2.3-1.6,3.3-1.2,3.3-1.2c0.7,1.7,0.2,2.9,0.1,3.2c0.8,0.8,1.2,1.9,1.2,3.2c0,4.6-2.8,5.6-5.5,5.9c0.4,0.4,0.8,1.1,0.8,2.2c0,1.6,0,2.9,0,3.3c0,0.3,0.2,0.7,0.8,0.6c4.8-1.6,8.2-6.1,8.2-11.4C55.1,11.2,49.7,5.8,43.1,5.8z"></path>
+    </svg>
+  </a>
+  <!-- Header -->
+  <header>
+    <h1 class="l--page">Tinker With a <b>Neural Network</b> <span class="optional">Right Here </span>in Your Browser.<br>Don’t Worry, You Can’t Break It. We Promise.</h1>
+  </header>
+
+  <!-- Top Controls -->
+  <div id="top-controls">
+    <div class="container l--page">
+      <div class="timeline-controls">
+        <button class="mdl-button mdl-js-button mdl-button--icon ui-resetButton" id="reset-button" title="Reset the network" data-upgraded=",MaterialButton">
+          <i class="material-icons">replay</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored ui-playButton" id="play-pause-button" title="Run/Pause" data-upgraded=",MaterialButton">
+          <i class="material-icons">play_arrow</i>
+          <i class="material-icons">pause</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon ui-stepButton" id="next-step-button" title="Step" data-upgraded=",MaterialButton">
+          <i class="material-icons">skip_next</i>
+        </button>
+      </div>
+      <div class="control">
+        <span class="label">Epoch</span>
+        <span class="value" id="iter-number">000,000</span>
+      </div>
+      <div class="control ui-learningRate">
+        <label for="learningRate">Learning rate</label>
+        <div class="select">
+          <select id="learningRate">
+            <option value="0.00001">0.00001</option>
+            <option value="0.0001">0.0001</option>
+            <option value="0.001">0.001</option>
+            <option value="0.003">0.003</option>
+            <option value="0.01">0.01</option>
+            <option value="0.03" selected="selected">0.03</option>
+            <option value="0.1">0.1</option>
+            <option value="0.3">0.3</option>
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-activation">
+        <label for="activations">Activation</label>
+        <div class="select">
+          <select id="activations">
+            <option value="relu">ReLU</option>
+            <option value="tanh" selected="selected">Tanh</option>
+            <option value="sigmoid">Sigmoid</option>
+            <option value="linear">Linear</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-regularization">
+        <label for="regularizations">Regularization</label>
+        <div class="select">
+          <select id="regularizations">
+            <option value="none" selected="selected">None</option>
+            <option value="L1">L1</option>
+            <option value="L2">L2</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-regularizationRate">
+        <label for="regularRate">Regularization rate</label>
+        <div class="select">
+          <select id="regularRate">
+            <option value="0" selected="selected">0</option>
+            <option value="0.001">0.001</option>
+            <option value="0.003">0.003</option>
+            <option value="0.01">0.01</option>
+            <option value="0.03">0.03</option>
+            <option value="0.1">0.1</option>
+            <option value="0.3">0.3</option>
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+      <div class="control ui-problem">
+        <label for="problem">Problem type</label>
+        <div class="select">
+          <select id="problem">
+            <option value="classification" selected="selected">Classification</option>
+            <option value="regression">Regression</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Part -->
+  <div id="main-part" class="l--page">
+
+    <!--  Data Column-->
+    <div class="column data">
+      <h4>
+        <span>Data</span>
+      </h4>
+      <div class="ui-dataset">
+        <p>Which dataset do you want to use?</p>
+        <div class="dataset-list">
+          <div class="dataset" title="Circle" style="">
+            <canvas class="data-thumbnail selected" data-dataset="circle" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Exclusive or" style="">
+            <canvas class="data-thumbnail" data-dataset="xor" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Gaussian" style="">
+            <canvas class="data-thumbnail" data-dataset="gauss" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Spiral" style="">
+            <canvas class="data-thumbnail" data-dataset="spiral" width="100" height="100"></canvas>
+          </div>
+          <div class="dataset" title="Plane" style="display: none;">
+            <canvas class="data-thumbnail selected" data-regdataset="reg-plane"></canvas>
+          </div>
+          <div class="dataset" title="Multi gaussian" style="display: none;">
+            <canvas class="data-thumbnail" data-regdataset="reg-gauss"></canvas>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ui-percTrainData">
+          <label for="percTrainData">Ratio of training to test data:&nbsp;&nbsp;<span class="value">50</span>%</label>
+          <p class="slider">
+            <div class="mdl-slider__container"><input class="mdl-slider mdl-js-slider is-upgraded" id="percTrainData" min="10" max="90" step="10" data-upgraded=",MaterialSlider" value="50" type="range"><div class="mdl-slider__background-flex"><div class="mdl-slider__background-lower" style="flex: 0.5 1 0%;"></div><div class="mdl-slider__background-upper" style="flex: 0.5 1 0%;"></div></div></div>
+          </p>
+        </div>
+        <div class="ui-noise">
+          <label for="noise">Noise:&nbsp;&nbsp;<span class="value">0</span></label>
+          <p class="slider">
+            <div class="mdl-slider__container"><input class="mdl-slider mdl-js-slider is-lowest-value is-upgraded" id="noise" min="0" max="50" step="5" data-upgraded=",MaterialSlider" value="0" type="range"><div class="mdl-slider__background-flex"><div class="mdl-slider__background-lower" style="flex: 0 1 0%;"></div><div class="mdl-slider__background-upper" style="flex: 1 1 0%;"></div></div></div>
+          </p>
+        </div>
+        <div class="ui-batchSize">
+          <label for="batchSize">Batch size:&nbsp;&nbsp;<span class="value">10</span></label>
+          <p class="slider">
+            <div class="mdl-slider__container"><input class="mdl-slider mdl-js-slider is-upgraded" id="batchSize" min="1" max="30" step="1" data-upgraded=",MaterialSlider" value="10" type="range"><div class="mdl-slider__background-flex"><div class="mdl-slider__background-lower" style="flex: 0.310345 1 0%;"></div><div class="mdl-slider__background-upper" style="flex: 0.689655 1 0%;"></div></div></div>
+          </p>
+        </div>
+          <button class="basic-button" id="data-regen-button" title="Regenerate data">
+            Regenerate
+          </button>
+      </div>
+    </div>
+
+    <!-- Features Column -->
+    <div class="column features" style="height: 495px;">
+      <h4>Features</h4>
+      <p>Which properties do you want to feed in?</p>
+      <div id="network">
+        <div id="canvas-6" class="canvas" style="position: absolute; left: 600.647px; top: 58px;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-5" class="canvas" style="position: absolute; left: 600.647px; top: 3px;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-4" class="canvas" style="position: absolute; left: 245.353px; top: 168px;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-3" class="canvas" style="position: absolute; left: 245.353px; top: 113px;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-2" class="canvas" style="position: absolute; left: 245.353px; top: 58px;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-1" class="canvas" style="position: absolute; left: 245.353px; top: 3px;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-sinY" class="canvas inactive" style="position: absolute; left: 53px; top: 333px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-sinX" class="canvas inactive" style="position: absolute; left: 53px; top: 278px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-xTimesY" class="canvas inactive" style="position: absolute; left: 53px; top: 223px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-ySquared" class="canvas inactive" style="position: absolute; left: 53px; top: 168px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-xSquared" class="canvas inactive" style="position: absolute; left: 53px; top: 113px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-y" class="canvas active" style="position: absolute; left: 53px; top: 58px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><div id="canvas-x" class="canvas active" style="position: absolute; left: 53px; top: 3px; cursor: pointer;"><div style="width: 30px; height: 30px; position: relative; top: 0px; left: 0px;"><canvas width="10" height="10" style="width: 30px; height: 30px; position: absolute; top: 0px; left: 0px;"></canvas></div></div><svg id="svg" width="752" height="385">
+          <defs>
+            <marker id="markerArrow" markerWidth="7" markerHeight="13" refX="1" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M2,11 L7,6 L2,2"></path>
+            </marker>
+          </defs>
+        <g class="core" transform="translate(3,3)"><path marker-start="url(#markerArrow)" class="link" id="link6-7" d="M629.6470588235294,70C690.8235294117646,70 690.8235294117646,18 752,18" style="stroke-dashoffset: 0; stroke-width: 1.85644; stroke: rgb(238, 193, 139);"></path><path marker-start="url(#markerArrow)" class="link" id="link5-7" d="M629.6470588235294,15C690.8235294117646,15 690.8235294117646,12 752,12" style="stroke-dashoffset: 0; stroke-width: 1.24732; stroke: rgb(201, 218, 229);"></path><path marker-start="url(#markerArrow)" class="link" id="link4-6" d="M274.3529411764706,180C436,180 436,74.5 597.6470588235294,74.5" style="stroke-dashoffset: 0; stroke-width: 1.7713; stroke: rgb(238, 197, 149);"></path><path marker-start="url(#markerArrow)" class="link" id="link3-6" d="M274.3529411764706,125C436,125 436,71.5 597.6470588235294,71.5" style="stroke-dashoffset: 0; stroke-width: 1.88346; stroke: rgb(238, 191, 136);"></path><path marker-start="url(#markerArrow)" class="link" id="link2-6" d="M274.3529411764706,70C436,70 436,68.5 597.6470588235294,68.5" style="stroke-dashoffset: 0; stroke-width: 1.60904; stroke: rgb(236, 205, 167);"></path><path marker-start="url(#markerArrow)" class="link" id="link1-6" d="M274.3529411764706,15C436,15 436,65.5 597.6470588235294,65.5" style="stroke-dashoffset: 0; stroke-width: 1.11094; stroke: rgb(233, 229, 223);"></path><path marker-start="url(#markerArrow)" class="link" id="link4-5" d="M274.3529411764706,180C436,180 436,19.5 597.6470588235294,19.5" style="stroke-dashoffset: 0; stroke-width: 1.75777; stroke: rgb(237, 197, 150);"></path><path marker-start="url(#markerArrow)" class="link" id="link3-5" d="M274.3529411764706,125C436,125 436,16.5 597.6470588235294,16.5" style="stroke-dashoffset: 0; stroke-width: 1.65778; stroke: rgb(150, 192, 218);"></path><path marker-start="url(#markerArrow)" class="link" id="link2-5" d="M274.3529411764706,70C436,70 436,13.5 597.6470588235294,13.5" style="stroke-dashoffset: 0; stroke-width: 1.56222; stroke: rgb(236, 207, 172);"></path><path marker-start="url(#markerArrow)" class="link" id="link1-5" d="M274.3529411764706,15C436,15 436,10.5 597.6470588235294,10.5" style="stroke-dashoffset: 0; stroke-width: 1.39364; stroke: rgb(183, 209, 225);"></path><path marker-start="url(#markerArrow)" class="link" id="linky-4" d="M82,70C162.1764705882353,70 162.1764705882353,183 242.3529411764706,183" style="stroke-dashoffset: 0; stroke-width: 1.63408; stroke: rgb(153, 193, 219);"></path><path marker-start="url(#markerArrow)" class="link" id="linkx-4" d="M82,15C162.1764705882353,15 162.1764705882353,177 242.3529411764706,177" style="stroke-dashoffset: 0; stroke-width: 1.758; stroke: rgb(237, 197, 150);"></path><path marker-start="url(#markerArrow)" class="link" id="linky-3" d="M82,70C162.1764705882353,70 162.1764705882353,128 242.3529411764706,128" style="stroke-dashoffset: 0; stroke-width: 1.69506; stroke: rgb(146, 190, 217);"></path><path marker-start="url(#markerArrow)" class="link" id="linkx-3" d="M82,15C162.1764705882353,15 162.1764705882353,122 242.3529411764706,122" style="stroke-dashoffset: 0; stroke-width: 1.23707; stroke: rgb(234, 223, 209);"></path><path marker-start="url(#markerArrow)" class="link" id="linky-2" d="M82,70C162.1764705882353,70 162.1764705882353,73 242.3529411764706,73" style="stroke-dashoffset: 0; stroke-width: 1.60903; stroke: rgb(156, 195, 219);"></path><path marker-start="url(#markerArrow)" class="link" id="linkx-2" d="M82,15C162.1764705882353,15 162.1764705882353,67 242.3529411764706,67" style="stroke-dashoffset: 0; stroke-width: 1.61377; stroke: rgb(236, 204, 166);"></path><path marker-start="url(#markerArrow)" class="link" id="linky-1" d="M82,70C162.1764705882353,70 162.1764705882353,18 242.3529411764706,18" style="stroke-dashoffset: 0; stroke-width: 1.21925; stroke: rgb(205, 220, 229);"></path><path marker-start="url(#markerArrow)" class="link" id="linkx-1" d="M82,15C162.1764705882353,15 162.1764705882353,12 242.3529411764706,12" style="stroke-dashoffset: 0; stroke-width: 1.31287; stroke: rgb(234, 219, 200);"></path><g class="node active" id="nodex" transform="translate(50,0)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan></text></g><g class="node active" id="nodey" transform="translate(50,55)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan></text></g><g class="node inactive" id="nodexSquared" transform="translate(50,110)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan><tspan baseline-shift="super" style="font-size: 9px;">2</tspan></text></g><g class="node inactive" id="nodeySquared" transform="translate(50,165)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan><tspan baseline-shift="super" style="font-size: 9px;">2</tspan></text></g><g class="node inactive" id="nodexTimesY" transform="translate(50,220)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan><tspan>X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan></text></g><g class="node inactive" id="nodesinX" transform="translate(50,275)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>sin(X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">1</tspan><tspan>)</tspan></text></g><g class="node inactive" id="nodesinY" transform="translate(50,330)"><rect x="0" y="0" width="30" height="30"></rect><text class="main-label" x="-10" y="15" text-anchor="end"><tspan>sin(X</tspan><tspan baseline-shift="sub" style="font-size: 9px;">2</tspan><tspan>)</tspan></text></g><g class="node" id="node1" transform="translate(242.3529411764706,0)"><rect x="0" y="0" width="30" height="30"></rect><rect id="bias-1" x="-7" y="28" width="5" height="5" style="fill: rgb(210, 223, 230);"></rect></g><path d="M82,15C162.1764705882353,15 162.1764705882353,12 242.3529411764706,12" class="link-hover"></path><path d="M82,70C162.1764705882353,70 162.1764705882353,18 242.3529411764706,18" class="link-hover"></path><g class="node" id="node2" transform="translate(242.3529411764706,55)"><rect x="0" y="0" width="30" height="30"></rect><rect id="bias-2" x="-7" y="28" width="5" height="5" style="fill: rgb(210, 223, 230);"></rect></g><path d="M82,15C162.1764705882353,15 162.1764705882353,67 242.3529411764706,67" class="link-hover"></path><path d="M82,70C162.1764705882353,70 162.1764705882353,73 242.3529411764706,73" class="link-hover"></path><g class="node" id="node3" transform="translate(242.3529411764706,110)"><rect x="0" y="0" width="30" height="30"></rect><rect id="bias-3" x="-7" y="28" width="5" height="5" style="fill: rgb(210, 223, 230);"></rect></g><path d="M82,15C162.1764705882353,15 162.1764705882353,122 242.3529411764706,122" class="link-hover"></path><path d="M82,70C162.1764705882353,70 162.1764705882353,128 242.3529411764706,128" class="link-hover"></path><g class="node" id="node4" transform="translate(242.3529411764706,165)"><rect x="0" y="0" width="30" height="30"></rect><rect id="bias-4" x="-7" y="28" width="5" height="5" style="fill: rgb(210, 223, 230);"></rect></g><path d="M82,15C162.1764705882353,15 162.1764705882353,177 242.3529411764706,177" class="link-hover"></path><path d="M82,70C162.1764705882353,70 162.1764705882353,183 242.3529411764706,183" class="link-hover"></path><g class="node" id="node5" transform="translate(597.6470588235294,0)"><rect x="0" y="0" width="30" height="30"></rect><rect id="bias-5" x="-7" y="28" width="5" height="5" style="fill: rgb(210, 223, 230);"></rect></g><path d="M274.3529411764706,15C436,15 436,10.5 597.6470588235294,10.5" class="link-hover"></path><path d="M274.3529411764706,70C436,70 436,13.5 597.6470588235294,13.5" class="link-hover"></path><path d="M274.3529411764706,125C436,125 436,16.5 597.6470588235294,16.5" class="link-hover"></path><path d="M274.3529411764706,180C436,180 436,19.5 597.6470588235294,19.5" class="link-hover"></path><g class="node" id="node6" transform="translate(597.6470588235294,55)"><rect x="0" y="0" width="30" height="30"></rect><rect id="bias-6" x="-7" y="28" width="5" height="5" style="fill: rgb(210, 223, 230);"></rect></g><path d="M274.3529411764706,15C436,15 436,65.5 597.6470588235294,65.5" class="link-hover"></path><path d="M274.3529411764706,70C436,70 436,68.5 597.6470588235294,68.5" class="link-hover"></path><path d="M274.3529411764706,125C436,125 436,71.5 597.6470588235294,71.5" class="link-hover"></path><path d="M274.3529411764706,180C436,180 436,74.5 597.6470588235294,74.5" class="link-hover"></path><path d="M629.6470588235294,15C690.8235294117646,15 690.8235294117646,12 752,12" class="link-hover"></path><path d="M629.6470588235294,70C690.8235294117646,70 690.8235294117646,18 752,18" class="link-hover"></path></g></svg>
+        <!-- Hover card -->
+        <div id="hovercard" style="left: 731px; top: 12.4px; display: block;">
+          <div style="font-size:10px">Click anywhere to edit.</div>
+          <div><span class="type">Weight</span> is <span class="value">0.14</span><span><input style="display: none;" value="0.14" type="number"></span>.</div>
+        </div>
+        <div class="callout thumbnail" style="top: 203px; left: 257.353px;">
+          <svg viewBox="0 0 30 30">
+            <defs>
+              <marker id="arrow" markerWidth="5" markerHeight="5" refX="5" refY="2.5" orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,0 L5,2.5 L0,5 z"></path>
+              </marker>
+            </defs>
+            <path d="M12,30C5,20 2,15 12,0" marker-end="url(#arrow)">
+          </path></svg>
+          <div class="label">
+            This is the output from one <b>neuron</b>. Hover to see it larger.
+          </div>
+        </div>
+        <div class="callout weights" style="top: 98.212px; left: 499.193px;">
+          <svg viewBox="0 0 30 30">
+            <defs>
+              <marker id="arrow" markerWidth="5" markerHeight="5" refX="5" refY="2.5" orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,0 L5,2.5 L0,5 z"></path>
+              </marker>
+            </defs>
+            <path d="M12,30C5,20 2,15 12,0" marker-end="url(#arrow)">
+          </path></svg>
+          <div class="label">
+            The outputs are mixed with varying <b>weights</b>, shown by the thickness of the lines.
+          </div>
+        </div>
+      <div class="plus-minus-neurons" style="left: 232.353px;"><div class="ui-numNodes1"><button class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton"><i class="material-icons">add</i></button><button class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton"><i class="material-icons">remove</i></button></div><div>4 neurons</div></div><div class="plus-minus-neurons" style="left: 587.647px;"><div class="ui-numNodes2"><button class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton"><i class="material-icons">add</i></button><button class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton"><i class="material-icons">remove</i></button></div><div>2 neurons</div></div></div>
+    </div>
+
+    <!-- Hidden Layers Column -->
+    <div class="column hidden-layers">
+      <h4>
+        <div class="ui-numHiddenLayers">
+          <button id="add-layers" class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+            <i class="material-icons">add</i>
+          </button>
+          <button id="remove-layers" class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+            <i class="material-icons">remove</i>
+          </button>
+        </div>
+        <span id="num-layers">2</span>
+        <span id="layers-label">Hidden layers</span>
+      </h4>
+      <div class="bracket"></div>
+    </div>
+
+    <!-- Output Column -->
+    <div class="column output">
+      <h4>Output</h4>
+      <div class="metrics">
+        <div class="output-stats ui-percTrainData">
+          <span>Test loss</span>
+          <div class="value" id="loss-test">0.536</div>
+        </div>
+        <div class="output-stats train">
+          <span>Training loss</span>
+          <div class="value" id="loss-train">0.520</div>
+        </div>
+        <div id="linechart"><svg width="138" height="55"><g transform="translate(2,2)"><path class="line" style="fill: none; stroke: rgb(119, 119, 119); stroke-width: 1.5px;" d="M0,51Z"></path><path class="line" style="fill: none; stroke: black; stroke-width: 1.5px;" d="M0,0Z"></path></g></svg></div>
+      </div>
+      <div id="heatmap"><div style="width: 300px; height: 300px; position: relative; top: -20px; left: -20px;"><canvas width="100" height="100" style="width: 260px; height: 260px; position: absolute; top: 20px; left: 20px;"></canvas><svg width="300" height="300" style="position: absolute; left: 0px; top: 0px;"><g transform="translate(20,20)"><g class="train"><circle r="3" cx="218.95367047593885" cy="98.96825452085818" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="156.098995160138" cy="40.98214452228542" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="192.2490541835677" cy="181.6760035228564" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="115.43554176094933" cy="96.67410717166521" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="223.58845422558971" cy="102.3514192302003" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="100.1820736863832" cy="107.58069852950709" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="162.22842265283543" cy="212.03986140423783" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="106.00275045420325" cy="131.56464518947178" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="104.77636507253695" cy="134.4598127423776" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="37.62125918017556" cy="114.65805634150924" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="158.94609691060015" cy="141.3521891129244" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="212.85251723280498" cy="61.917679904403016" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="31.78930616609762" cy="133.50912630708402" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="138.46143972152055" cy="127.35502515754955" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="146.4487151720052" cy="105.77669778524756" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="170.39719438838202" cy="128.05082624228498" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="154.5598832337899" cy="205.21608498339663" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="126.5454681739882" cy="179.93899338249253" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="121.02045042110753" cy="159.37864259426064" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="204.07259305670874" cy="54.02708792364028" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="158.56163371567726" cy="157.70499297761705" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="137.04071441947033" cy="111.85228641033457" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="220.97058508053254" cy="106.12436294150805" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="204.26703888088193" cy="83.9206096405371" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="221.75536166322706" cy="90.25324347183654" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="113.39740238562268" cy="234.43917328406172" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="203.51021241378803" cy="191.00801736327452" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="174.0894785811003" cy="104.6605099194703" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="52.9259167652969" cy="142.84190889614095" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="185.9187887154259" cy="55.54159104628724" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="98.59037929375165" cy="143.31951262741086" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="176.1988638057598" cy="63.30358386735254" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="208.53639474103085" cy="185.01216102684458" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="193.31737297318264" cy="61.0309661080217" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="185.49378202544383" cy="195.29264756960683" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="143.3691296619415" cy="54.87746842377115" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="164.98455118167828" cy="206.18211540154587" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="111.16337618166855" cy="108.32887687359187" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="56.848501418877916" cy="167.8307230034915" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="133.48117376425316" cy="143.56879160378267" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="129.69539165971457" cy="51.733452475991385" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="135.42185083044203" cy="158.82893667011007" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="143.27186774049483" cy="166.42419472045776" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="165.33898267282547" cy="99.62707940740212" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="51.145582335894645" cy="91.77926647970669" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="161.95047304493534" cy="132.74313796803835" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="205.67341781760877" cy="121.45966199605333" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="122.52015339314958" cy="144.25138615248096" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="63.20103352793983" cy="92.98652010378913" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="24.70384018042094" cy="118.50731330162773" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="208.52902566291147" cy="102.1119682678008" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="81.32886795956294" cy="49.1450858330445" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="125.22959338654823" cy="88.29809324116412" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="215.72720837057025" cy="93.72052108193208" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="109.20836486609181" cy="141.60667166876232" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="140.4732828853067" cy="118.11821365176142" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="115.18514731969015" cy="167.96987327289568" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="232.12041033449438" cy="149.5564280257957" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="147.97657777978318" cy="125.21929867018909" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="149.7952122732801" cy="204.7251333594824" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="174.27622430635182" cy="50.324816507006105" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="116.29610818221593" cy="131.2979079043746" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="100.88832274273477" cy="44.85649215704492" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="27.786914259180378" cy="141.4892282125594" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="127.78312193297356" cy="45.27683937223486" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="133.30560443152174" cy="225.68720521505068" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="103.74982815316235" cy="85.11820026388328" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="163.35590795218076" cy="36.28886476438119" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="29.61370528213352" cy="159.70197160227332" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="40.598285776919255" cy="179.81374781863818" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="201.75692690447048" cy="72.04560391613855" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="86.80504055461006" cy="122.39910293934653" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="111.40246087838305" cy="104.95031675023937" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="101.97104836928509" cy="106.59485216451185" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="206.18801339880224" cy="123.75113093531318" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="193.0468526053487" cy="205.23094544473187" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="110.50692930139799" cy="129.06327980140205" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="101.65021790950628" cy="175.85177857496515" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="125.07821466209501" cy="77.47406076662935" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="224.42236932842712" cy="178.53295406634018" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="132.7224736676436" cy="127.837098995274" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="151.6432951475011" cy="136.31820874847978" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="101.3121583563762" cy="153.3944361778535" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="157.0402144313616" cy="50.98910422838572" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="231.50196334121813" cy="103.85761473989982" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="138.68633266175684" cy="81.84005245234373" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="125.78368106238037" cy="125.85239198830931" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="209.8442365496199" cy="60.78467260714813" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="114.29473705941321" cy="35.13092104086196" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="125.6725441858806" cy="102.76111896718955" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="126.83269972346547" cy="132.78766094814122" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="191.97172032636712" cy="79.37632208439572" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="171.76214562507963" cy="61.84647124685554" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="195.09811583391635" cy="73.3114170702605" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="46.426377036668846" cy="66.49613186697414" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="99.69795015160913" cy="118.61395429550944" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="110.27691550635744" cy="112.5715865277168" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="130.04105641948638" cy="127.91663458592598" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="162.62577483046823" cy="208.67143826287275" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="136.20892276926566" cy="125.3431557982102" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="126.41324097864914" cy="126.16099487796714" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="131.15551375152234" cy="88.54273849287529" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="141.7826945868316" cy="229.6106851169042" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="167.00233556617437" cy="158.08016808801878" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="132.4791054378509" cy="129.4419919141769" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="123.77722993420788" cy="121.57587162146339" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="140.55280677211329" cy="137.45605253656313" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="150.84072150095042" cy="118.77307932957405" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="88.76419605537075" cy="34.33763573266363" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="134.40834442582113" cy="149.5134116339076" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="128.0383587100977" cy="218.32986864299923" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="214.05134064186768" cy="156.37755687240545" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="149.75276563450996" cy="106.35591381890704" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="164.2452511266744" cy="98.72691720764963" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="143.23998665073128" cy="108.08240726459036" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="83.34078116579376" cy="64.39030929318518" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="146.09597917312203" cy="215.74180006443316" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="226.28476587314222" cy="178.0012635360121" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="96.15700982457176" cy="117.7244749957401" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="111.74989754367832" cy="213.71453951482772" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="116.78492291670918" cy="33.948978966132785" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="135.4659360554265" cy="84.54150957019088" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="225.4912517914254" cy="98.17722762500608" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="56.517116562603206" cy="179.50094370064286" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="233.5961642790514" cy="124.49796925981279" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="169.33361096636978" cy="226.43489465346016" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="66.1509119838252" cy="175.303944083091" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="130.1382751254363" cy="129.61474903544936" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="132.3612951752115" cy="134.73845436287039" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="126.31776110515433" cy="144.45484124431817" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="162.07899267460374" cy="116.35777012867436" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="79.47704175772127" cy="125.19097303660969" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="111.37348768598565" cy="229.30905115674452" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="232.24046374098168" cy="107.03051587436397" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="107.37076032462615" cy="225.56736775856385" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="137.01013573189277" cy="136.2039029690298" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="80.50212818395929" cy="196.90481332575905" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="188.97239613092677" cy="197.3149079725537" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="124.95014983430158" cy="103.58537987595805" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="225.4754371730112" cy="82.67544932235836" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="61.90847730261023" cy="167.54759494634948" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="190.87935771895408" cy="67.1330866252923" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="135.37362177095946" cy="93.60779607358305" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="47.5285053647114" cy="159.1971671570041" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="39.63210022994255" cy="87.2352301323784" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="142.41202705141748" cy="110.15441970561032" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="232.57321383709265" cy="139.817499229856" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="202.36682879264225" cy="174.65206928176804" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="178.1723894913342" cy="54.23258606891229" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="148.4176050344999" cy="143.2896697224662" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="103.37760723572951" cy="130.57094413048293" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="136.52609181978602" cy="95.94128981718403" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="120.25535767727938" cy="89.19289206662263" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="117.2277671756638" cy="114.12262701827913" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="155.68209534597935" cy="209.24191528662251" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="172.37371114695762" cy="158.89776074030888" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="30.401048960135363" cy="170.62352433794015" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="123.37266944708175" cy="178.78536594310097" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="231.50416731948448" cy="123.47735108869306" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="105.02768497699608" cy="56.83419973777397" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="96.12814145127402" cy="110.03454283824989" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="112.29109422186876" cy="127.48169926156496" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="182.50496082505333" cy="61.61045314042198" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="147.34912792424353" cy="123.03605535623706" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="120.30845993266858" cy="42.96734765280249" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="108.06175833902445" cy="217.86015014381113" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="130.04733968250295" cy="129.97134736588137" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="207.30343806468633" cy="92.21746389730525" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="130.17496374311744" cy="119.39665232502821" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="67.79679549946054" cy="44.62272594665483" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="167.49918243509512" cy="107.96047389173619" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="108.99722521967657" cy="29.11261088736152" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="156.3635108183121" cy="233.19697591369388" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="119.16813695807798" cy="111.28491947716249" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="158.67221159846284" cy="50.64749736828759" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="135.8931909926678" cy="51.415555549981455" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="205.2548215816893" cy="61.217318669052155" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="50.135295586531306" cy="127.74760189493229" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="38.42852759469822" cy="176.85132423460334" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="75.79416940466696" cy="57.44368393638699" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="155.5790623165866" cy="234.30599106560982" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="145.81499870769284" cy="118.04014572090699" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="127.76490743089343" cy="145.03625978346167" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="175.60858719590175" cy="110.99937699110309" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="219.89563324925572" cy="158.52346079093508" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="154.2360613003838" cy="120.626187082171" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="139.769633066617" cy="143.9430822479759" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="156.54437238414766" cy="205.30084238515167" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="123.44088011789599" cy="163.9004239733989" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="207.10785146632702" cy="81.00038396797487" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="125.79247391985824" cy="134.55643625022034" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="194.3643721393202" cy="67.72745065884007" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="138.57575097246766" cy="236.99532747831466" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="147.85295730328588" cy="102.66944472337188" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="180.37032256116294" cy="69.0538679249" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="148.34893850591428" cy="103.75543326929484" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="92.20070410545593" cy="48.8629862695236" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="215.78223029871816" cy="165.17501181886104" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="140.56450026723613" cy="148.87506564357906" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="147.5115594137191" cy="111.4825097441609" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="138.2159269303071" cy="115.33714509295255" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="129.0084874840747" cy="127.3612869261148" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="50.16154564337911" cy="92.91984666155186" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="115.1062253359346" cy="33.273930684096946" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="128.98795373510418" cy="103.81561563693295" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="175.43203926020016" cy="48.84193976813046" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="158.90691137882752" cy="113.31941154882765" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="118.6367733427584" cy="160.34061162189212" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="85.23738375920031" cy="192.39183887604364" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="105.17627590641254" cy="163.36528174504883" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="73.37166272185998" cy="202.8388206282268" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="103.7309122085606" cy="215.1319720595049" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="164.92869605868088" cy="200.69671695931797" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="127.06194131712287" cy="148.16912337373955" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="213.3554932460297" cy="163.94323986642402" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="220.1368585655836" cy="182.77227245706356" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="132.8962056527958" cy="142.5851116248873" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="226.11203555620102" cy="154.7057811236077" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="54.191149483475115" cy="145.7399932217942" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="137.70026364000356" cy="125.77326927849053" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="122.43286900328367" cy="48.47653205228579" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="114.95718668846618" cy="95.5378815714972" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="67.61997717832458" cy="179.85911528237648" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="137.66193192403207" cy="50.78694696729043" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="50.33175872758354" cy="128.24373269582216" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="143.8373481722196" cy="137.5011908964321" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="140.58809905912787" cy="104.36217986087793" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="92.32621454612143" cy="128.49888569264758" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="84.65436652503736" cy="143.33833498761282" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="113.09187535574556" cy="144.25854615077068" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="124.86136850301214" cy="84.32759147720438" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="76.13306220865421" cy="38.74816889270802" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="63.25789547236746" cy="53.02731122278473" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="123.1533304541066" cy="120.31325731653773" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="191.5850629575846" cy="78.23860430919784" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="50.94958866207051" cy="68.59046392932693" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="84.82856933077372" cy="207.81982243209382" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="99.00469440037669" cy="131.952377847525" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="175.10950659178832" cy="53.54374205274926" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="197.6808643193544" cy="181.4788503280727" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="77.42157657652756" cy="194.05656676375466" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="231.82101269589862" cy="130.86757646437687" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="160.85374553838412" cy="134.51913453956104" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="66.22028268119404" cy="62.26158476781767" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="106.14166486353199" cy="44.51192939717252" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="76.97728022515501" cy="132.56887577470494" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="115.64298569061893" cy="139.58752581694355" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="127.32206731822573" cy="120.665653973767" style="fill: rgb(8, 119, 189);"></circle><circle r="3" cx="199.7566235707975" cy="59.04418880531792" style="fill: rgb(245, 147, 34);"></circle><circle r="3" cx="219.41833454610776" cy="93.18777774934179" style="fill: rgb(245, 147, 34);"></circle></g><g class="test"></g><g class="x axis" transform="translate(0,260)"><g class="tick" style="opacity: 1;" transform="translate(0,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-6</text></g><g class="tick" style="opacity: 1;" transform="translate(21.666666666666664,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-5</text></g><g class="tick" style="opacity: 1;" transform="translate(43.33333333333333,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-4</text></g><g class="tick" style="opacity: 1;" transform="translate(65,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-3</text></g><g class="tick" style="opacity: 1;" transform="translate(86.66666666666666,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-2</text></g><g class="tick" style="opacity: 1;" transform="translate(108.33333333333334,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-1</text></g><g class="tick" style="opacity: 1;" transform="translate(130,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">0</text></g><g class="tick" style="opacity: 1;" transform="translate(151.66666666666669,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">1</text></g><g class="tick" style="opacity: 1;" transform="translate(173.33333333333331,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">2</text></g><g class="tick" style="opacity: 1;" transform="translate(195,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">3</text></g><g class="tick" style="opacity: 1;" transform="translate(216.66666666666669,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">4</text></g><g class="tick" style="opacity: 1;" transform="translate(238.33333333333331,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">5</text></g><g class="tick" style="opacity: 1;" transform="translate(260,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">6</text></g><path class="domain" d="M0,6V0H260V6"></path></g><g class="y axis" transform="translate(260,0)"><g class="tick" style="opacity: 1;" transform="translate(0,260)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-6</text></g><g class="tick" style="opacity: 1;" transform="translate(0,238.33333333333331)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-5</text></g><g class="tick" style="opacity: 1;" transform="translate(0,216.66666666666669)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-4</text></g><g class="tick" style="opacity: 1;" transform="translate(0,195)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-3</text></g><g class="tick" style="opacity: 1;" transform="translate(0,173.33333333333334)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-2</text></g><g class="tick" style="opacity: 1;" transform="translate(0,151.66666666666666)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">-1</text></g><g class="tick" style="opacity: 1;" transform="translate(0,130)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">0</text></g><g class="tick" style="opacity: 1;" transform="translate(0,108.33333333333333)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">1</text></g><g class="tick" style="opacity: 1;" transform="translate(0,86.66666666666667)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">2</text></g><g class="tick" style="opacity: 1;" transform="translate(0,65)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">3</text></g><g class="tick" style="opacity: 1;" transform="translate(0,43.33333333333332)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">4</text></g><g class="tick" style="opacity: 1;" transform="translate(0,21.666666666666675)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">5</text></g><g class="tick" style="opacity: 1;" transform="translate(0,0)"><line x2="6" y2="0"></line><text dy=".32em" style="text-anchor: start;" x="9" y="0">6</text></g><path class="domain" d="M6,0H0V260H6"></path></g></g></svg></div></div>
+      <div style="float:left;margin-top:20px">
+        <div style="display:flex; align-items:center;">
+
+          <!-- Gradient color scale -->
+          <div class="label" style="width:105px; margin-right: 10px">
+            Colors shows data, neuron and weight values.
+          </div>
+          <svg width="150" height="30" id="colormap">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="100%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f59322" stop-opacity="1"></stop>
+                <stop offset="50%" stop-color="#e8eaeb" stop-opacity="1"></stop>
+                <stop offset="100%" stop-color="#0877bd" stop-opacity="1"></stop>
+              </linearGradient>
+            </defs>
+            <g class="core" transform="translate(3, 0)">
+              <rect width="144" height="10" style="fill: url('#gradient');"></rect>
+            <g class="x axis" transform="translate(0,10)"><g class="tick" style="opacity: 1;" transform="translate(0,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">-1</text></g><g class="tick" style="opacity: 1;" transform="translate(72,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">0</text></g><g class="tick" style="opacity: 1;" transform="translate(144,0)"><line y2="6" x2="0"></line><text dy=".71em" style="text-anchor: middle;" y="9" x="0">1</text></g><path class="domain" d="M0,6V0H144V6"></path></g></g>
+          </svg>
+        </div>
+        <br>
+        <div style="display:flex;">
+          <label class="ui-showTestData mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded" for="show-test-data" data-upgraded=",MaterialCheckbox,MaterialRipple">
+            <input id="show-test-data" class="mdl-checkbox__input" type="checkbox">
+            <span class="mdl-checkbox__label label">Show test data</span>
+          <span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label>
+          <label class="ui-discretize mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded" for="discretize" data-upgraded=",MaterialCheckbox,MaterialRipple">
+            <input id="discretize" class="mdl-checkbox__input" type="checkbox">
+            <span class="mdl-checkbox__label label">Discretize output</span>
+          <span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- More -->
+  <div class="more">
+    <!-- <button class="mdl-button mdl-js-button mdl-button--icon"><i class="material-icons">keyboard_arrow_down</i></button> -->
+    <button class="mdl-button mdl-js-button mdl-button--fab" data-upgraded=",MaterialButton">
+      <i class="material-icons">keyboard_arrow_down</i>
+    </button>
+  </div>
+  <!-- Article -->
+
+  <article id="article-text">
+    <div class="l--body">
+      <h2>Um, What Is a Neural Network?</h2>
+      <p>It’s a technique for building a computer program that learns 
+from data. It is based very loosely on how we think the human brain 
+works. First, a collection of software “neurons” are created and 
+connected together, allowing them to send messages to each other. Next, 
+the network is asked to solve a problem, which it attempts to do over 
+and over, each time strengthening the connections that lead to success 
+and diminishing those that lead to failure. For a more detailed 
+introduction to neural networks, Michael Nielsen’s <a href="http://neuralnetworksanddeeplearning.com/index.html">Neural Networks and Deep Learning</a> is a good place to start. For a more technical overview, try <a href="http://www.deeplearningbook.org/">Deep Learning</a> by Ian Goodfellow, Yoshua Bengio, and Aaron Courville.</p>
+    </div>
+
+    <div class="l--body">
+      <h2>This Is Cool, Can I Repurpose It?</h2>
+      <p>Please do! We’ve open sourced it on <a href="https://github.com/tensorflow/playground">GitHub</a>
+ with the hope that it can make neural networks a little more accessible
+ and easier to learn. You’re free to use it in any way that follows our <a href="https://github.com/tensorflow/playground/blob/master/LICENSE">Apache License</a>. And if you have any suggestions for additions or changes, please <a href="https://github.com/tensorflow/playground/issues">let us know</a>.</p>
+      <p>We’ve also provided some controls below to enable you tailor 
+the playground to a specific topic or lesson. Just choose which features
+ you’d like to be visible below then save <a class="hide-controls-link" href="http://playground.tensorflow.org/#activation=tanh&amp;batchSize=10&amp;dataset=circle&amp;regDataset=reg-plane&amp;learningRate=0.03&amp;regularizationRate=0&amp;noise=0&amp;networkShape=4,2&amp;seed=0.58560&amp;showTestData=false&amp;discretize=false&amp;percTrainData=50&amp;x=true&amp;y=true&amp;xTimesY=false&amp;xSquared=false&amp;ySquared=false&amp;cosX=false&amp;sinX=false&amp;cosY=false&amp;sinY=false&amp;collectStats=false&amp;problem=classification&amp;initZero=false&amp;hideText=false">this link</a>, or <a href="javascript:location.reload();">refresh</a> the page.</p>
+      <div class="hide-controls"><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Show test data</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Discretize output</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Play button</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Step button</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Reset button</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Learning rate</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Activation</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Regularization</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Regularization rate</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Problem type</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Which dataset</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Ratio train data</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Noise level</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label">Batch size</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-checked is-upgraded" data-upgraded=",MaterialCheckbox,MaterialRipple"><input class="mdl-checkbox__input" checked="checked" type="checkbox"><span class="mdl-checkbox__label label"># of hidden layers</span><span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple"></span></span></label></div>
+    </div>
+
+    <div class="l--body">
+      <h2>What Do All the Colors Mean?</h2>
+      <p>Orange and blue are used throughout the visualization in 
+slightly different ways, but in general orange shows negative values 
+while blue shows positive values.</p>
+      <p>The data points (represented by small circles) are initially 
+colored orange or blue, which correspond to positive one and negative 
+one.</p>
+      <p>In the hidden layers, the lines are colored by the weights of 
+the connections between neurons. Blue shows a positive weight, which 
+means the network is using that output of the neuron as given. An orange
+ line shows that the network is assiging a negative weight.</p>
+      <p>In the output layer, the dots are colored orange or blue 
+depending on their original values. The background color shows what the 
+network is predicting for a particular area. The intensity of the color 
+shows how confident that prediction is.</p>
+    </div>
+
+    <div class="l--body">
+      <h2>What Library Are You Using?</h2>
+      <p>We wrote a tiny neural network <a href="https://github.com/tensorflow/playground/blob/master/src/nn.ts">library</a>
+      that meets the demands of this educational visualization. For real-world applications, consider the
+      <a href="https://www.tensorflow.org/">TensorFlow</a> library.
+      </p>
+    </div>
+
+    <div class="l--body">
+      <h2>Credits</h2>
+      <p>
+        This was created by Daniel Smilkov and Shan Carter.
+        This is a continuation of many people’s previous work — most notably Andrej Karpathy’s <a href="http://cs.stanford.edu/people/karpathy/convnetjs/demo/classify2d.html">convnet.js demo</a>
+        and Chris Olah’s <a href="http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/">articles</a>
+ about neural networks.
+        Many thanks also to D. Sculley for help with the original idea 
+and to Fernanda Viégas and Martin Wattenberg and the rest of the
+        <a href="https://research.google.com/bigpicture/">Big Picture</a> and <a href="https://research.google.com/teams/brain/">Google Brain</a> teams for feedback and guidance.
+      </p>
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="l--body">
+      <a href="https://www.tensorflow.org/" class="logo">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 528 87" xml:space="preserve">
+        	<path d="M37.4,15.5v70.3H25V15.5H1V3.4h60.4v12.1H37.4z"></path>
+        	<path d="M149,85.8v-35c0-12.5-4.7-16.9-12.7-16.9c-8.1,0-12.7,5.8-12.7,15.8v36.1h-12.1V24h12.1v5.9c3.1-4.5,9.2-7.2,15.5-7.2
+        		c14.4,0,22,9.4,22,27.7v35.4H149z"></path>
+        	<path d="M188.7,87.1c-8.4,0-17.4-3.3-23.7-7.9l5.5-9.2c5.8,4,12.2,6.1,18,6.1c7.7,0,11.3-2.5,11.3-6.8c0-4.7-5.4-6.9-14.4-10.4
+        		c-13.3-5.2-18.1-9.7-18.1-19.4c0-11.1,8.7-16.8,21.1-16.8c7.8,0,15.4,2.8,21,6.8l-5.3,9.3c-5.1-3.5-10.1-5.3-16-5.3
+        		c-5.9,0-8.5,2.4-8.5,5.7c0,3.1,2.1,5.3,11.4,8.9c13.8,5.3,20.8,9.1,20.8,20.7C211.9,82.5,200.8,87.1,188.7,87.1z"></path>
+        	<path d="M242,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
+        		C269.9,75.1,257.9,87.1,242,87.1z M241.9,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
+        		C257.7,42.4,251.7,34.3,241.9,34.3z"></path>
+        	<path d="M310,36.8c-2.6-1.4-5.3-2.2-9.3-2.2c-7.7,0-12.1,5.4-12.1,15.9v35.3h-12.1V24h12.1v5.9c2.8-4.1,8-7.2,14.1-7.2
+        		c4.9,0,8,0.9,10.5,2.6L310,36.8z"></path>
+        	<path d="M330.3,15.5v21.5H354v12.1h-23.7v36.6H318V3.4h50.3v12.1H330.3z"></path>
+        	<path d="M374.5,85.8V6.4L386.6,0v85.8H374.5z"></path>
+        	<path d="M421.9,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
+        		C449.8,75.1,437.7,87.1,421.9,87.1z M421.7,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
+        		C437.5,42.4,431.5,34.3,421.7,34.3z"></path>
+        	<path d="M510.9,85.8h-10.4l-8.4-31.2c-1.3-4.7-2.6-10.2-3.2-13.2c-0.6,2.9-1.9,8.6-3.2,13.3l-8.2,31.1h-10.4L450.3,24h12l7.3,30
+        		c1.2,4.7,2.5,10.6,3.1,13.5c0.7-3.1,2.1-8.7,3.4-13.5l8.2-30h9.8l8.4,30.1c1.3,4.8,2.6,10.4,3.3,13.4c0.7-3.1,1.9-8.8,3.1-13.5
+        		l7.3-30h12L510.9,85.8z"></path>
+        	<path d="M79.1,76.2c-6.7,0-12.7-4-14.9-13.2l40.5-12.2c-0.2-2.8-0.6-5.4-1.3-8c-3-11.6-11.1-20.1-24.7-20.1
+        		c-16,0-27.1,11.3-27.1,32.3c0,20.5,12.2,32.1,26.7,32.1c9.4,0,15.9-2.9,21.3-8.1l-7.2-7.8C88.4,74.3,84.3,76.2,79.1,76.2z
+        	 M78,33.7c7.9,0,12.1,4.5,13.8,10.5l-27.9,8.5l0-3.5C64.9,39.3,69.8,33.7,78,33.7z"></path>
+        </svg>
+      </a>
+      <div class="links">
+        <a href="https://github.com/tensorflow/playground">Source on GitHub</a>
+      </div>
+    </div>
+  </footer>
+  <script src="A%20Neural%20Network%20Playground_files/bundle.js"></script>
+  <!-- Google analytics -->
+  <script src="A%20Neural%20Network%20Playground_files/analytics_002.js"></script>
+
+
+</body></html>
