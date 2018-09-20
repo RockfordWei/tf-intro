@@ -1,0 +1,8 @@
+mnist:
+  build: ./
+  ports:
+    - "8888:8888"
+    - "6006:6006"
+  volumes:
+    - "./:/var/www:rw"
+  working_dir: "/var/www"
